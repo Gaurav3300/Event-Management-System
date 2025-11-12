@@ -16,6 +16,8 @@ export default function Home() {
   const [error, setError] = useState('');
   const [q, setQ] = useState('');
   const [category, setCategory] = useState('');
+  const [scrollY, setScrollY] = useState(0);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const categories = ['All','Tech','Sports','Cultural','Workshop'];
   const { announcements } = useSocket(window.location.origin);
   const { user } = useAuth();
@@ -29,6 +31,12 @@ export default function Home() {
     if (user) fetchRecs();
     else setRecs([]);
   }, [user]);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   async function fetchEvents(overrides = {}) {
     setLoading(true);
@@ -69,81 +77,111 @@ export default function Home() {
     <span className={`text-xs px-2 py-0.5 rounded-full border ${status==='approved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : status==='pending' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-rose-50 text-rose-700 border-rose-200'}`}>{status}</span>
   );
 
-  const Card = ({ e }) => (
-    <Link 
-      to={`/events/${e._id}`} 
-      className="group bg-white dark:bg-slate-900 rounded-2xl overflow-hidden transition-all duration-300
-        hover:shadow-[0_0_30px_-5px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_0_30px_-5px_rgba(0,0,0,0.5)]
-        border border-slate-200/60 dark:border-slate-800/60 hover:border-indigo-500/50 dark:hover:border-indigo-500/50"
+  const Card = ({ e, index }) => (
+    <motion.div
+      whileHover={{ y: -8 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+      onHoverStart={() => setSelectedEvent(e._id)}
+      onHoverEnd={() => setSelectedEvent(null)}
     >
-      <div className="aspect-[16/9] relative overflow-hidden">
-        <img
-          src={e.posterUrl || '/placeholder.svg'}
-          alt={e.title}
-          className="w-full h-full object-cover transition-transform duration-700 ease-in-out
-            group-hover:scale-110"
-          onError={(ev)=>{ ev.currentTarget.onerror=null; ev.currentTarget.src='/placeholder.svg'; }}
-          loading="lazy"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 
-          group-hover:opacity-100 transition-opacity duration-300" />
-        <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full 
-          group-hover:translate-y-0 transition-transform duration-300">
-          <p className="text-white/90 text-sm line-clamp-2">{e.description}</p>
+      <Link 
+        to={`/events/${e._id}`} 
+        className="group bg-white dark:bg-slate-900 rounded-2xl overflow-hidden transition-all duration-300
+          hover:shadow-[0_0_30px_-5px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_0_30px_-5px_rgba(0,0,0,0.5)]
+          border border-slate-200/60 dark:border-slate-800/60 hover:border-indigo-500/50 dark:hover:border-indigo-500/50
+          block h-full"
+      >
+        <div className="aspect-[16/9] relative overflow-hidden">
+          <img
+            src={e.posterUrl || '/placeholder.svg'}
+            alt={e.title}
+            className="w-full h-full object-cover transition-transform duration-700 ease-in-out
+              group-hover:scale-110"
+            onError={(ev)=>{ ev.currentTarget.onerror=null; ev.currentTarget.src='/placeholder.svg'; }}
+            loading="lazy"
+          />
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: selectedEvent === e._id ? 1 : 0 }}
+            className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" 
+          />
+          <motion.div 
+            initial={{ translateY: 20, opacity: 0 }}
+            animate={{ 
+              translateY: selectedEvent === e._id ? 0 : 20,
+              opacity: selectedEvent === e._id ? 1 : 0
+            }}
+            transition={{ duration: 0.3 }}
+            className="absolute bottom-0 left-0 right-0 p-4"
+          >
+            <p className="text-white/90 text-sm line-clamp-2">{e.description}</p>
+          </motion.div>
         </div>
-      </div>
 
-      <div className="p-5 space-y-4">
-        <div className="flex items-center justify-between">
-          <Badge status={e.status} />
-          <span className="text-xs px-3 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/50 
-            text-indigo-600 dark:text-indigo-400 font-medium">{e.category}</span>
-        </div>
+        <div className="p-5 space-y-4">
+          <div className="flex items-center justify-between">
+            <Badge status={e.status} />
+            <motion.span 
+              animate={{ scale: selectedEvent === e._id ? 1.05 : 1 }}
+              className="text-xs px-3 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/50 
+              text-indigo-600 dark:text-indigo-400 font-medium"
+            >
+              {e.category}
+            </motion.span>
+          </div>
 
-        <div>
-          <h3 className="font-semibold text-xl mb-2 text-slate-800 dark:text-slate-100 
-            group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300">
-            {e.title}
-          </h3>
-          
-          <div className="flex items-center gap-4 text-sm text-slate-600 dark:text-slate-400">
-            <div className="flex items-center gap-1.5">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} 
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              <span>{new Date(e.date).toLocaleDateString()}</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} 
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} 
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              <span>{e.location}</span>
+          <div>
+            <h3 className="font-semibold text-xl mb-2 text-slate-800 dark:text-slate-100 
+              group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300">
+              {e.title}
+            </h3>
+            
+            <div className="flex items-center gap-4 text-sm text-slate-600 dark:text-slate-400">
+              <div className="flex items-center gap-1.5 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} 
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span>{new Date(e.date).toLocaleDateString()}</span>
+              </div>
+              <div className="flex items-center gap-1.5 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} 
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} 
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span>{e.location}</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="flex items-center gap-1 pt-2 border-t border-slate-100 dark:border-slate-800">
-          {[...Array(5)].map((_, i) => (
-            <svg 
-              key={i} 
-              className={`w-4 h-4 ${i < Math.round(e.averageRating || 0) ? 
-                'text-amber-400 dark:text-amber-500' : 'text-slate-300 dark:text-slate-700'}`}
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-            </svg>
-          ))}
-          <span className="ml-2 text-sm text-slate-600 dark:text-slate-400">
-            {e.averageRating?.toFixed?.(1) || '0.0'}
-          </span>
+          <motion.div 
+            animate={{ scaleX: selectedEvent === e._id ? 1 : 0 }}
+            className="flex items-center gap-1 pt-2 border-t border-slate-100 dark:border-slate-800"
+          >
+            {[...Array(5)].map((_, i) => (
+              <motion.svg 
+                key={i}
+                animate={{ scale: selectedEvent === e._id ? 1.1 : 1 }}
+                transition={{ delay: i * 0.05 }}
+                className={`w-4 h-4 ${i < Math.round(e.averageRating || 0) ? 
+                  'text-amber-400 dark:text-amber-500' : 'text-slate-300 dark:text-slate-700'}`}
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+              </motion.svg>
+            ))}
+            <motion.span 
+              animate={{ opacity: selectedEvent === e._id ? 1 : 0.5 }}
+              className="ml-2 text-sm text-slate-600 dark:text-slate-400">
+              {e.averageRating?.toFixed?.(1) || '0.0'}
+            </motion.span>
+          </motion.div>
         </div>
-      </div>
-    </Link>
+      </Link>
+    </motion.div>
   );
 
   const Skeleton = () => (
@@ -186,7 +224,12 @@ export default function Home() {
       )}
 
       <section className="py-16">
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 mb-8">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 mb-8 shadow-lg"
+        >
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -194,30 +237,39 @@ export default function Home() {
             viewport={{ once: true }}
             className="flex flex-col md:flex-row gap-4"
           >
-            <div className="relative flex-1">
+            <motion.div 
+              className="relative flex-1"
+              whileFocus={{ scale: 1.02 }}
+            >
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-              <input 
+              <motion.input 
                 className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 
                   bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 
                   focus:border-transparent transition-all duration-200" 
                 placeholder="Search events..." 
-                value={q} 
-                onChange={(e) => setQ(e.target.value)} 
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && fetchEvents()}
               />
-            </div>
-            <div className="flex flex-wrap gap-2 items-center">
-              {categories.map(c => {
+            </motion.div>
+            <div className="flex flex-wrap gap-2 items-center justify-end">
+              {categories.map((c, idx) => {
                 const active = (c==='All' && !category) || c===category;
                 return (
-                  <button
+                  <motion.button
                     key={c}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.05 }}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                       active
-                        ? 'bg-indigo-600 text-white'
+                        ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/30'
                         : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
                     }`}
                     onClick={()=>{
@@ -227,19 +279,21 @@ export default function Home() {
                     }}
                   >
                     {c}
-                  </button>
+                  </motion.button>
                 );
               })}
-              <button 
-                className="px-6 py-2 rounded-lg bg-indigo-600 text-white font-medium 
-                  hover:bg-indigo-700 transition-colors duration-200" 
+              <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-6 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium 
+                  hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200" 
                 onClick={fetchEvents}
               >
                 Search
-              </button>
+              </motion.button>
             </div>
           </motion.div>
-        </div>
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0 }}
@@ -262,16 +316,20 @@ export default function Home() {
                   <Skeleton />
                 </motion.div>
               )) : 
-              events.map((e, index) => (
+              events.length > 0 ? events.map((e, index) => (
                 <motion.div
                   key={e._id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: index * 0.1 }}
                 >
-                  <Card e={e} />
+                  <Card e={e} index={index} />
                 </motion.div>
-              ))
+              )) : (
+                <div className="col-span-full text-center py-12">
+                  <p className="text-slate-600 dark:text-slate-400 text-lg">No events found. Try adjusting your filters.</p>
+                </div>
+              )
             }
           </div>
         </motion.div>
