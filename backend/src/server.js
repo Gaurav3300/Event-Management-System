@@ -64,9 +64,10 @@ app.use((err, req, res, next) => {
 async function start() {
   await connectDB();
   initSocket(server, env.clientUrl);
-  server.listen(env.port, () => {
-    console.log(`Server running on http://localhost:${env.port}`);
-  });
+  server.listen(env.port, "0.0.0.0", () => {
+    console.log(`Server running on http://0.0.0.0:${env.port}`);
+});
+
 }
 
 start();
