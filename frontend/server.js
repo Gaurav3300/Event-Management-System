@@ -1,39 +1,50 @@
-import express from 'express';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import compression from 'compression';
+import express from "express";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import compression from "compression";
+import { createProxyMiddleware } from "http-proxy-middleware";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const HOST = process.env.HOST || 'localhost';
+const BACKEND_URL = "http://54.158.13.94:5050";
 
-// Middleware
+app.use(
+  "/api",
+  createProxyMiddleware({
+    target: BACKEND_URL,
+    changeOrigin: true,
+  })
+);
+
+app.use(
+  "/uploads",
+  createProxyMiddleware({
+    target: BACKEND_URL,
+    changeOrigin: true,
+  })
+);
+app.use(
+  "/api",
+  createProxyMiddleware({
+    target: "http://localhost:5050", // backend
+    changeOrigin: true,
+  })
+);
 app.use(compression());
-app.use(express.static(join(__dirname, 'dist'), {
-  maxAge: '1d',
-  etag: false
-}));
+app.use(express.static(join(__dirname, "dist"), { maxAge: "1d" }));
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+app.get("/health", (req, res) => {
+  res.json({ status: "ok" });
 });
 
-// Handle React Router - serve index.html for all routes
-app.get('*', (req, res) => {
-  res.sendFile(join(__dirname, 'dist', 'index.html'));
+// ⭐ THIS IS THE FIX — EXPRESS 5 COMPATIBLE WILDCARD
+app.get(/.*/, (req, res) => {
+  res.sendFile(join(__dirname, "dist", "index.html"));
 });
 
-// Error handler
-app.use((err, req, res, next) => {
-  console.error('Server error:', err);
-  res.status(500).json({ error: 'Internal server error' });
-});
-
-app.listen(PORT, HOST, () => {
-  console.log(`EventManager Frontend running on http://${HOST}:${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Frontend running on http://0.0.0.0:${PORT}`);
 });

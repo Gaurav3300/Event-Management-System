@@ -1,0 +1,111 @@
+2025-11-14 17:43:37 +00:00: 
+2025-11-14 17:43:37 +00:00: > ems-backend@1.0.0 start
+2025-11-14 17:43:37 +00:00: > node src/server.js
+2025-11-14 17:43:37 +00:00: 
+2025-11-14 17:43:38 +00:00: [dotenv@17.2.3] injecting env (0) from .env -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+2025-11-14 17:43:39 +00:00: MongoDB connected
+2025-11-14 17:43:39 +00:00: Server running on http://localhost:5050
+2025-11-14 18:01:30 +00:00: 
+2025-11-14 18:01:30 +00:00: > ems-backend@1.0.0 start
+2025-11-14 18:01:30 +00:00: > node src/server.js
+2025-11-14 18:01:30 +00:00: 
+2025-11-14 18:01:31 +00:00: [dotenv@17.2.3] injecting env (0) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+2025-11-14 18:01:33 +00:00: MongoDB connected
+2025-11-14 18:01:33 +00:00: Server running on http://0.0.0.0:5050
+2025-11-14 23:59:29 +00:00: [0mGET / [33m404[0m 4.884 ms - 29[0m
+2025-11-14 23:59:30 +00:00: [0mGET /favicon.ico [33m404[0m 2.790 ms - 29[0m
+2025-11-14 23:59:30 +00:00: [0mGET /robots.txt [33m404[0m 0.652 ms - 29[0m
+2025-11-14 23:59:31 +00:00: [0mGET /.well-known/security.txt [33m404[0m 3.857 ms - 29[0m
+2025-11-14 23:59:31 +00:00: [0mGET /sitemap.xml [33m404[0m 394.132 ms - 29[0m
+2025-11-14 23:59:32 +00:00: [0mGET /llms.txt [33m404[0m 2.839 ms - 29[0m
+2025-11-15 06:18:32 +00:00: [0mGET / [33m404[0m 44.111 ms - 29[0m
+2025-11-15 08:30:06 +00:00: 
+2025-11-15 08:30:06 +00:00: > ems-backend@1.0.0 start
+2025-11-15 08:30:06 +00:00: > node src/server.js
+2025-11-15 08:30:06 +00:00: 
+2025-11-15 08:30:22 +00:00: [dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+2025-11-15 08:30:50 +00:00: MongoDB connected
+2025-11-15 08:30:50 +00:00: Server running on http://0.0.0.0:5050
+2025-11-15 08:46:47 +00:00: 
+2025-11-15 08:46:47 +00:00: > ems-backend@1.0.0 start
+2025-11-15 08:46:47 +00:00: > node src/server.js
+2025-11-15 08:46:47 +00:00: 
+2025-11-15 08:46:47 +00:00: [dotenv@17.2.3] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+2025-11-15 08:46:49 +00:00: MongoDB connected
+2025-11-15 08:46:49 +00:00: Server running on http://0.0.0.0:5050
+2025-11-15 08:49:41 +00:00: 
+2025-11-15 08:49:41 +00:00: > ems-backend@1.0.0 start
+2025-11-15 08:49:41 +00:00: > node src/server.js
+2025-11-15 08:49:41 +00:00: 
+2025-11-15 08:49:41 +00:00: [dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  override existing env vars with { override: true }
+2025-11-15 08:49:42 +00:00: MongoDB connected
+2025-11-15 08:49:42 +00:00: Server running on http://0.0.0.0:5050
+2025-11-15 08:55:41 +00:00: [dotenv@17.2.3] injecting env (0) from .env -- tip: 📡 add observability to secrets: https://dotenvx.com/ops
+2025-11-15 08:55:42 +00:00: MongoDB connected
+2025-11-15 08:55:42 +00:00: Server running on http://0.0.0.0:5050
+2025-11-15 09:02:32 +00:00: [dotenv@17.2.3] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+2025-11-15 09:02:33 +00:00: MongoDB connected
+2025-11-15 09:02:33 +00:00: Server running on http://0.0.0.0:5050
+2025-11-15 09:08:48 +00:00: [0mGET / [33m404[0m 5.391 ms - 29[0m
+2025-11-15 09:09:17 +00:00: [0mGET / [33m404[0m 0.464 ms - 29[0m
+2025-11-15 09:10:33 +00:00: [0mGET / [33m404[0m 0.317 ms - 29[0m
+2025-11-15 09:24:03 +00:00: [dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+2025-11-15 09:24:04 +00:00: MongoDB connected
+2025-11-15 09:24:04 +00:00: Server running on http://0.0.0.0:5050
+2025-11-15 09:24:39 +00:00: [0mGET / [33m404[0m 6.384 ms - 29[0m
+2025-11-15 09:29:37 +00:00: [0mGET / [33m404[0m 0.446 ms - 29[0m
+2025-11-15 09:29:42 +00:00: [0mGET /events [33m404[0m 0.256 ms - 29[0m
+2025-11-15 09:29:42 +00:00: [0mGET /stats/dashboard [33m404[0m 0.341 ms - 29[0m
+2025-11-15 09:30:03 +00:00: [0mPOST /auth/login [33m404[0m 21.525 ms - 29[0m
+2025-11-15 09:30:06 +00:00: [0mPOST /auth/login [33m404[0m 1.108 ms - 29[0m
+2025-11-15 09:31:19 +00:00: [0mGET /health [33m404[0m 0.352 ms - 29[0m
+2025-11-15 09:40:10 +00:00: [0mPOST /auth/login [33m404[0m 0.487 ms - 29[0m
+2025-11-15 09:45:06 +00:00: [dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  override existing env vars with { override: true }
+2025-11-15 09:45:07 +00:00: MongoDB connected
+2025-11-15 09:45:07 +00:00: Server running on http://0.0.0.0:5050
+2025-11-15 09:45:26 +00:00: [0mPOST /auth/login [33m404[0m 25.073 ms - 29[0m
+2025-11-15 09:45:28 +00:00: [0mPOST /auth/login [33m404[0m 0.712 ms - 29[0m
+2025-11-15 09:54:29 +00:00: [dotenv@17.2.3] injecting env (0) from .env -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops
+2025-11-15 09:54:30 +00:00: MongoDB connected
+2025-11-15 09:54:30 +00:00: Server running on http://0.0.0.0:5050
+2025-11-15 09:54:41 +00:00: [0mPOST /auth/login [33m404[0m 11.235 ms - 29[0m
+2025-11-15 09:55:07 +00:00: [0mPOST /auth/login [33m404[0m 0.655 ms - 29[0m
+2025-11-15 09:55:15 +00:00: [0mGET /events [33m404[0m 0.341 ms - 29[0m
+2025-11-15 09:55:15 +00:00: [0mGET /stats/dashboard [33m404[0m 0.254 ms - 29[0m
+2025-11-15 09:55:24 +00:00: [0mGET /events [33m404[0m 0.376 ms - 29[0m
+2025-11-15 09:55:25 +00:00: [0mGET /stats/dashboard [33m404[0m 0.273 ms - 29[0m
+2025-11-15 09:55:29 +00:00: [0mGET /events [33m404[0m 0.274 ms - 29[0m
+2025-11-15 09:55:29 +00:00: [0mGET /stats/dashboard [33m404[0m 0.217 ms - 29[0m
+2025-11-15 09:58:28 +00:00: [dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+2025-11-15 09:58:29 +00:00: MongoDB connected
+2025-11-15 09:58:29 +00:00: Server running on http://0.0.0.0:5050
+2025-11-15 09:58:33 +00:00: [0mGET /events [33m404[0m 3.836 ms - 29[0m
+2025-11-15 09:58:33 +00:00: [0mGET /stats/dashboard [33m404[0m 2.387 ms - 29[0m
+2025-11-15 09:59:07 +00:00: [0mGET / [33m404[0m 0.333 ms - 29[0m
+2025-11-15 09:59:18 +00:00: [0mGET /events [33m404[0m 2.030 ms - 29[0m
+2025-11-15 09:59:18 +00:00: [0mGET /stats/dashboard [33m404[0m 1.461 ms - 29[0m
+2025-11-15 09:59:38 +00:00: [0mPOST /auth/login [33m404[0m 9.001 ms - 29[0m
+2025-11-15 10:00:08 +00:00: [0mPOST /auth/login [33m404[0m 0.654 ms - 29[0m
+2025-11-15 10:20:09 +00:00: [0mPOST /auth/login [33m404[0m 0.458 ms - 29[0m
+2025-11-15 10:31:48 +00:00: [dotenv@17.2.3] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+2025-11-15 10:31:50 +00:00: MongoDB connected
+2025-11-15 10:31:50 +00:00: Server running on http://0.0.0.0:5050
+2025-11-15 10:31:57 +00:00: [0mPOST /auth/login [33m404[0m 26.021 ms - 29[0m
+2025-11-15 10:32:16 +00:00: [0mGET /events [33m404[0m 0.627 ms - 29[0m
+2025-11-15 10:32:16 +00:00: [0mGET /stats/dashboard [33m404[0m 1.862 ms - 29[0m
+2025-11-15 10:36:05 +00:00: [dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+2025-11-15 10:36:06 +00:00: MongoDB connected
+2025-11-15 10:36:06 +00:00: Server running on http://0.0.0.0:5050
+2025-11-15 10:36:16 +00:00: [0mGET /events [33m404[0m 2.415 ms - 29[0m
+2025-11-15 10:36:16 +00:00: [0mGET /stats/dashboard [33m404[0m 0.376 ms - 29[0m
+2025-11-15 10:44:59 +00:00: [0mGET /api/health [32m200[0m 3.144 ms - 15[0m
+2025-11-15 10:45:17 +00:00: [0mGET /api/events [32m200[0m 56.738 ms - 2873[0m
+2025-11-15 10:51:42 +00:00: [dotenv@17.2.3] injecting env (0) from .env -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops
+2025-11-15 10:51:43 +00:00: MongoDB connected
+2025-11-15 10:51:43 +00:00: Server running on http://0.0.0.0:5050
+2025-11-15 10:51:53 +00:00: [0mGET /events [33m404[0m 3.675 ms - 29[0m
+2025-11-15 10:51:53 +00:00: [0mGET /stats/dashboard [33m404[0m 0.435 ms - 29[0m
+2025-11-15 10:53:12 +00:00: [0mGET /events [33m404[0m 0.281 ms - 29[0m
+2025-11-15 10:56:44 +00:00: [0mGET /events [33m404[0m 1.616 ms - 29[0m
+2025-11-15 10:56:45 +00:00: [0mGET /stats/dashboard [33m404[0m 1.146 ms - 29[0m
+2025-11-15 13:44:33 +00:00: [0mGET / [33m404[0m 0.281 ms - 29[0m

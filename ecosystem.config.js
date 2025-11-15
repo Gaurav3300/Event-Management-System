@@ -2,8 +2,7 @@ module.exports = {
   apps: [
     {
       name: "event-backend",
-      script: "npm",
-      args: "start",
+      script: "./src/server.js",
       cwd: "./backend",
       instances: 1,
       exec_mode: "fork",
@@ -19,14 +18,13 @@ module.exports = {
     },
     {
       name: "event-frontend",
-      script: "npm",
-      args: "start",
+      script: "./server.js",
       cwd: "./frontend",
       instances: 1,
       exec_mode: "fork",
       env: {
         NODE_ENV: "production",
-        PORT: 80,  // Standard HTTP port for web
+        PORT: 3000,  // Standard HTTP port for web
         // Optional: Use 3000 if you don't have root access
         // PORT: 3000,
         HOST: "0.0.0.0"
