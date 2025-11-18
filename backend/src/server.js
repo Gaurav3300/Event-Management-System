@@ -39,15 +39,15 @@ app.use('/api', rateLimit({ windowMs: 60 * 1000, max: 120 }));
 
 // Static posters
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
-
+app.use('/', express.static(path.join(process.cwd(), 'uploads')));
 // API Routes (mounted later when implemented)
-app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
-app.use('/api/auth', authRoutes);
-app.use('/api/events', eventRoutes);
-app.use('/api/registrations', registrationRoutes);
-app.use('/api/reviews', reviewRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/stats', statsRoutes);
+app.get('/health', (req, res) => res.json({ status: 'ok' }));
+app.use('/auth', authRoutes);
+app.use('/events', eventRoutes);
+app.use('/registrations', registrationRoutes);
+app.use('/reviews', reviewRoutes);
+app.use('/admin', adminRoutes);
+app.use('/stats', statsRoutes);
 
 // 404 handler
 app.use((req, res) => {

@@ -27,6 +27,13 @@ app.use(
   })
 );
 app.use(
+  "/poster-",
+  createProxyMiddleware({
+    target: BACKEND_URL,
+    changeOrigin: true,
+  })
+);
+app.use(
   "/api",
   createProxyMiddleware({
     target: "http://localhost:5050", // backend

@@ -129,7 +129,7 @@ export default function EventDetails() {
         </div>
       )}
       <div className="grid md:grid-cols-2 gap-4">
-        <img src={event.posterUrl || '/placeholder.svg'} className="w-full h-64 object-cover rounded-xl" />
+       <img src={event.posterUrl || '/placeholder.svg'} className="w-full h-64 object-cover rounded-xl" />
         <div>
           <h1 className="text-2xl font-bold">{event.title}</h1>
           <p className="text-slate-700 mt-2 dark:text-slate-300">{event.description}</p>
