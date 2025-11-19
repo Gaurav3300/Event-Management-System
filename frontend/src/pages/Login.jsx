@@ -2,9 +2,11 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import { useToast } from '../context/ToastContext.jsx';
 
 export default function Login() {
   const { login } = useAuth();
+  const { showToast } = useToast();
   const nav = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -16,6 +18,7 @@ export default function Login() {
     try {
       const res = await axios.post('/api/auth/login', { email, password });
       login(res.data);
+      showToast('success', `Welcome back, ${res.data.user.name}!`);
       nav('/');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');

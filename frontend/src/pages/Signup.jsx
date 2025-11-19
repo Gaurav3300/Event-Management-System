@@ -2,9 +2,11 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import { useToast } from '../context/ToastContext.jsx';
 
 export default function Signup() {
   const { login } = useAuth();
+  const { showToast } = useToast();
   const nav = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -18,6 +20,7 @@ export default function Signup() {
     try {
       const res = await axios.post('/api/auth/signup', { name, email, password, role });
       login(res.data);
+      showToast('success', `Welcome, ${res.data.user.name}! Your account is ready.`);
       nav('/');
     } catch (err) {
       setError(err.response?.data?.message || 'Signup failed');

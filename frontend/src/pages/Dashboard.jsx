@@ -13,6 +13,8 @@ export default function Dashboard() {
   const [title, setTitle] = useState('');
   const [date, setDate] = useState('');
   const [location, setLocation] = useState('');
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
   const [category, setCategory] = useState('Tech');
   const [description, setDescription] = useState('');
   const [poster, setPoster] = useState(null);
@@ -20,6 +22,8 @@ export default function Dashboard() {
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [downloadAction, setDownloadAction] = useState(null);
   const [toast, setToast] = useState({ open: false, type: 'info', message: '' });
+  const [deleteConfirm, setDeleteConfirm] = useState({ open: false, eventId: null, eventTitle: '' });
+  const [showMapPicker, setShowMapPicker] = useState(false);
 
   const showToast = (type, message) => {
     setToast({ open: true, type, message });
@@ -198,14 +202,29 @@ export default function Dashboard() {
     fd.append('location', location);
     fd.append('category', category);
     fd.append('description', description);
+    if (latitude) fd.append('latitude', latitude);
+    if (longitude) fd.append('longitude', longitude);
     if (poster) fd.append('poster', poster);
     await axios.post('/api/events', fd);
-    setTitle(''); setDate(''); setLocation(''); setDescription(''); setPoster(null);
+    setTitle(''); setDate(''); setLocation(''); setDescription(''); setPoster(null); setLatitude(''); setLongitude('');
     await loadMyEvents();
+    showToast('success', 'Event created successfully!');
   }
 
   async function approve(id) { await axios.post(`/api/admin/events/${id}/approve`); await loadPending(); }
   async function reject(id) { await axios.post(`/api/admin/events/${id}/reject`); await loadPending(); }
+
+  async function deleteEvent(eventId) {
+    try {
+      await axios.delete(`/api/events/${eventId}`);
+      showToast('success', 'Event deleted successfully!');
+      setDeleteConfirm({ open: false, eventId: null, eventTitle: '' });
+      await loadMyEvents();
+    } catch (error) {
+      console.error('Delete error:', error);
+      showToast('error', error.response?.data?.message || 'Failed to delete event');
+    }
+  }
 
   const analytics = useMemo(() => {
     // Simple mini-analytics: count by status and category
@@ -327,34 +346,62 @@ export default function Dashboard() {
           <form onSubmit={createEvent} className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 space-y-4">
             <h2 className="font-semibold">Create Event</h2>
             <div className="space-y-1">
-              <label className="text-sm text-slate-600">Title</label>
-              <input className="input w-full" placeholder="Title" value={title} onChange={(e)=>setTitle(e.target.value)} />
+              <label className="text-sm text-slate-600 dark:text-slate-400">Title</label>
+              <input className="input w-full" placeholder="Event title" value={title} onChange={(e)=>setTitle(e.target.value)} required />
             </div>
             <div className="space-y-1">
-              <label className="text-sm text-slate-600">Date & Time</label>
-              <input className="input w-full" type="datetime-local" value={date} onChange={(e)=>setDate(e.target.value)} />
+              <label className="text-sm text-slate-600 dark:text-slate-400">Date & Time</label>
+              <input className="input w-full" type="datetime-local" value={date} onChange={(e)=>setDate(e.target.value)} required />
             </div>
             <div className="space-y-1">
-              <label className="text-sm text-slate-600">Location</label>
-              <input className="input w-full" placeholder="Location" value={location} onChange={(e)=>setLocation(e.target.value)} />
+              <label className="text-sm text-slate-600 dark:text-slate-400">Location</label>
+              <input className="input w-full" placeholder="City, Venue or Address" value={location} onChange={(e)=>setLocation(e.target.value)} required />
             </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <label className="text-sm text-slate-600 dark:text-slate-400">Latitude</label>
+                <input className="input w-full" placeholder="e.g., 28.6139" type="number" step="any" value={latitude} onChange={(e)=>setLatitude(e.target.value)} />
+              </div>
+              <div className="space-y-1">
+                <label className="text-sm text-slate-600 dark:text-slate-400">Longitude</label>
+                <input className="input w-full" placeholder="e.g., 77.2090" type="number" step="any" value={longitude} onChange={(e)=>setLongitude(e.target.value)} />
+              </div>
+            </div>
+            <button 
+              type="button"
+              onClick={() => setShowMapPicker(!showMapPicker)}
+              className="w-full px-4 py-2 rounded-lg border border-blue-300 dark:border-blue-700 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 font-medium transition-all duration-200 text-sm"
+            >
+              {showMapPicker ? '✕ Close Map Picker' : '🗺️ Get Location from Google Maps'}
+            </button>
+            {showMapPicker && (
+              <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-3 space-y-2 text-sm">
+                <p className="text-blue-900 dark:text-blue-200 font-medium">Get coordinates from Google Maps:</p>
+                <ol className="list-decimal list-inside text-blue-800 dark:text-blue-300 space-y-1 text-xs">
+                  <li>Open <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" className="underline font-semibold hover:text-blue-600 dark:hover:text-blue-400">Google Maps</a></li>
+                  <li>Search for your event location</li>
+                  <li>Right-click on the map and select "What's here?"</li>
+                  <li>Copy the coordinates shown and paste above</li>
+                </ol>
+              </div>
+            )}
             <div className="space-y-1">
-              <label className="text-sm text-slate-600">Category</label>
+              <label className="text-sm text-slate-600 dark:text-slate-400">Category</label>
               <select className="input w-full" value={category} onChange={(e)=>setCategory(e.target.value)}>
                 <option>Tech</option><option>Sports</option><option>Cultural</option><option>Workshop</option>
               </select>
             </div>
             <div className="space-y-1">
-              <label className="text-sm text-slate-600">Description</label>
-              <textarea className="input w-full min-h-[120px]" rows="5" placeholder="Describe the event in detail" value={description} onChange={(e)=>setDescription(e.target.value)} />
+              <label className="text-sm text-slate-600 dark:text-slate-400">Description</label>
+              <textarea className="input w-full min-h-[100px]" rows="4" placeholder="Describe the event in detail" value={description} onChange={(e)=>setDescription(e.target.value)} required />
             </div>
             <div className="space-y-1">
-              <label className="text-sm text-slate-600">Poster</label>
-              <input className="input w-full" type="file" onChange={(e)=>setPoster(e.target.files[0])} />
+              <label className="text-sm text-slate-600 dark:text-slate-400">Poster Image</label>
+              <input className="input w-full" type="file" accept="image/*" onChange={(e)=>setPoster(e.target.files[0])} />
             </div>
-            <div className="flex justify-end">
-              <button className="btn">Publish</button>
-            </div>
+            <button className="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200" type="submit">
+              Publish Event
+            </button>
           </form>
 
           <div className="space-y-4">
@@ -376,13 +423,19 @@ export default function Dashboard() {
               <ul className="space-y-2">
                 {mine.map((e) => (
                   <li key={e._id} className="p-3 border rounded-xl grid grid-cols-12 gap-3 items-center">
-                    <div className="col-span-9">
+                    <div className="col-span-6">
                       <div className="font-medium">{e.title}</div>
                       <div className="text-sm text-slate-500">Status: {e.status}</div>
                     </div>
-                    <div className="col-span-3 justify-self-end grid grid-cols-1 gap-2 justify-items-end">
-                      <button className="btn-outline w-24 px-3 py-1 text-xs" onClick={()=>{setSelectedEvent(e._id);loadParticipants(e._id);}}>Participants</button>
-                      <button className="btn w-24 px-3 py-1 text-xs" onClick={()=>exportCsv(e._id)}>Export CSV</button>
+                    <div className="col-span-6 justify-self-end grid grid-cols-3 gap-2 justify-items-end">
+                      <button className="btn-outline w-20 px-2 py-1 text-xs" onClick={()=>{setSelectedEvent(e._id);loadParticipants(e._id);}}>View</button>
+                      <button className="btn w-20 px-2 py-1 text-xs" onClick={()=>exportCsv(e._id)}>Export</button>
+                      <button 
+                        className="btn-outline w-20 px-2 py-1 text-xs text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 border-red-200 dark:border-red-800"
+                        onClick={() => setDeleteConfirm({ open: true, eventId: e._id, eventTitle: e.title })}
+                      >
+                        Delete
+                      </button>
                     </div>
                   </li>
                 ))}
@@ -427,6 +480,34 @@ export default function Dashboard() {
               </li>
             ))}
           </ul>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm.open && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 border border-slate-200 dark:border-slate-800">
+            <h3 className="text-lg font-bold mb-2">Delete Event?</h3>
+            <p className="text-slate-600 dark:text-slate-400 mb-6">
+              Are you sure you want to delete "<span className="font-semibold">{deleteConfirm.eventTitle}</span>"? This action cannot be undone and all associated registrations will be removed.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setDeleteConfirm({ open: false, eventId: null, eventTitle: '' })}
+                className="flex-1 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 
+                  hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200 font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => deleteEvent(deleteConfirm.eventId)}
+                className="flex-1 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white 
+                  transition-colors duration-200 font-medium"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

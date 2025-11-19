@@ -1,12 +1,15 @@
 import { BrowserRouter, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Home from './pages/Home.jsx';
+import HomeAdvanced from './pages/HomeAdvanced.jsx';
+import Wishlist from './pages/Wishlist.jsx';
 import EventDetails from './pages/EventDetails.jsx';
 import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import Pass from './pages/Pass.jsx';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
+import { ToastProvider, useToast } from './context/ToastContext.jsx';
 import { useEffect, useState } from 'react';
 
 function PrivateRoute({ children, roles }) {
@@ -36,9 +39,15 @@ function useTheme() {
 
 function Navbar() {
   const { user, logout } = useAuth();
+  const { showToast } = useToast();
   const { theme, setTheme } = useTheme();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const handleLogout = () => {
+    logout();
+    showToast('success', 'Goodbye! You\'ve been logged out');
+  };
 
   return (
     <header className="sticky top-0 z-10 bg-white/80 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-all duration-300">
@@ -69,6 +78,14 @@ function Navbar() {
             >
               Home
             </Link>
+            <Link 
+              to="/explore" 
+              className={`transition-all duration-200 hover:text-indigo-600 dark:hover:text-indigo-400 ${
+                location.pathname === '/explore' ? 'font-semibold text-indigo-600 dark:text-indigo-400' : ''
+              }`}
+            >
+              Explore
+            </Link>
             {user && (
               <Link 
                 to="/dashboard" 
@@ -81,7 +98,7 @@ function Navbar() {
             )}
             {user ? (
               <button 
-                onClick={logout} 
+                onClick={handleLogout} 
                 className="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200"
               >
                 Logout
@@ -131,6 +148,14 @@ function Navbar() {
             >
               Home
             </Link>
+            <Link 
+              to="/explore" 
+              className={`px-3 py-2 rounded-lg transition-all duration-200 ${
+                location.pathname === '/explore' ? 'bg-indigo-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400' : ''
+              }`}
+            >
+              Explore
+            </Link>
             {user && (
               <Link 
                 to="/dashboard" 
@@ -143,7 +168,7 @@ function Navbar() {
             )}
             {user ? (
               <button 
-                onClick={logout} 
+                onClick={handleLogout} 
                 className="px-3 py-2 rounded-lg text-left hover:bg-gray-100 dark:hover:bg-slate-800 transition-all duration-200"
               >
                 Logout
@@ -315,25 +340,29 @@ function Layout({ children }) {
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/events/:id" element={<EventDetails />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/pass" element={<PrivateRoute roles={["customer","organizer","admin"]}><Pass /></PrivateRoute>} />
-            <Route
-              path="/dashboard"
-              element={
-                <PrivateRoute roles={["customer", "organizer", "admin"]}>
-                  <Dashboard />
-                </PrivateRoute>
-              }
-            />
-          </Routes>
-        </Layout>
-      </BrowserRouter>
+      <ToastProvider>
+        <BrowserRouter>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/explore" element={<HomeAdvanced />} />
+              <Route path="/wishlist" element={<PrivateRoute roles={["customer","organizer","admin"]}><Wishlist /></PrivateRoute>} />
+              <Route path="/events/:id" element={<EventDetails />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/pass" element={<PrivateRoute roles={["customer","organizer","admin"]}><Pass /></PrivateRoute>} />
+              <Route
+                path="/dashboard"
+                element={
+                  <PrivateRoute roles={["customer", "organizer", "admin"]}>
+                    <Dashboard />
+                  </PrivateRoute>
+                }
+              />
+            </Routes>
+          </Layout>
+        </BrowserRouter>
+      </ToastProvider>
     </AuthProvider>
   );
 }

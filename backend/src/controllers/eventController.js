@@ -36,13 +36,39 @@ export const deleteEvent = async (req, res) => {
 
 export const listEvents = async (req, res) => {
   try {
-    const { q, category, status, organizer } = req.query;
-    const filter = {};
+    const { q, category, status, organizer, minPrice, maxPrice, startDate, endDate } = req.query;
+    const filter = { status: 'approved' }; // Only show approved events
+    
+    // Search filter
     if (q) filter.title = { $regex: q, $options: 'i' };
+    
+    // Category filter
     if (category) filter.category = category;
+    
+    // Status filter (for organizer view)
     if (status) filter.status = status;
+    
+    // Organizer filter
     if (organizer) filter.organizer = organizer;
-    const events = await Event.find(filter).populate('organizer', 'name').sort({ date: 1 });
+    
+    // Price range filter
+    if (minPrice || maxPrice) {
+      filter.price = {};
+      if (minPrice) filter.price.$gte = Number(minPrice);
+      if (maxPrice) filter.price.$lte = Number(maxPrice);
+    }
+    
+    // Date range filter
+    if (startDate || endDate) {
+      filter.date = {};
+      if (startDate) filter.date.$gte = new Date(startDate);
+      if (endDate) filter.date.$lte = new Date(endDate);
+    }
+    
+    const events = await Event.find(filter)
+      .populate('organizer', 'name avatarUrl')
+      .sort({ date: 1 });
+    
     res.json({ events });
   } catch (err) {
     res.status(500).json({ message: err.message });

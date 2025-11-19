@@ -7,12 +7,16 @@ const eventSchema = new mongoose.Schema(
     category: { type: String, required: true },
     date: { type: Date, required: true },
     location: { type: String, required: true },
+    latitude: { type: Number }, // For map integration
+    longitude: { type: Number }, // For map integration
     capacity: { type: Number, default: 0 },
+    price: { type: Number, default: 0 }, // For filtering
     organizer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     posterUrl: { type: String },
     status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
     tags: [{ type: String }],
     averageRating: { type: Number, default: 0 },
+    wishlistCount: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
