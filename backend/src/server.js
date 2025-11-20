@@ -18,6 +18,7 @@ import registrationRoutes from './routes/registrationRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import statsRoutes from './routes/statsRoutes.js';
+import wishlistRoutes from '/routes/wishlistRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -48,6 +49,7 @@ app.use('/registrations', registrationRoutes);
 app.use('/reviews', reviewRoutes);
 app.use('/admin', adminRoutes);
 app.use('/stats', statsRoutes);
+app.use('/wishlist',wishlistRoutes);
 
 // 404 handler
 app.use((req, res) => {
